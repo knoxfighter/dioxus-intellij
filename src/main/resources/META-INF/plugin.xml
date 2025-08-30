@@ -18,8 +18,11 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <actionOnSave id="DioxusCheckOnSaveAction"
-                      implementation="com.dioxuslabs.dioxus.actions.DioxusCheckOnSaveAction"
-                      order="after FormatOnSaveAction" />
+        <formattingService implementation="com.dioxuslabs.dioxus.formatting.DioxusDocumentFormattingService"
+                           id="DioxusDocumentFormattingService"
+                           order="first"/>
+
+        <notificationGroup id="Dioxus Formatting Notification Group"
+                           displayType="BALLOON"/>
     </extensions>
 </idea-plugin>
