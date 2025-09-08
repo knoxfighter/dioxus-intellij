@@ -14,6 +14,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.jetbrains.rust</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -24,5 +25,15 @@
 
         <notificationGroup id="Dioxus Formatting Notification Group"
                            displayType="BALLOON"/>
+        <configurationType implementation="com.dioxuslabs.dioxus.runconfig.DioxusRunConfigurationType"/>
     </extensions>
+
+    <actions>
+        <action class="com.dioxuslabs.dioxus.runconfig.BuildModeComboBoxAction"
+                id="Dioxus.BuildModeComboBox"
+                text="Mode"
+                description="Select debug/release mode">
+            <add-to-group group-id="MainToolbarRight" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
