@@ -138,22 +138,22 @@ tasks {
     }
 }
 
-abstract class BuildRustTask : DefaultTask() {
-    @get:Input
-    abstract val target: Property<String>
+//abstract class BuildRustTask : DefaultTask() {
+//    @get:Input
+//    abstract val target: Property<String>
+//
+//    @TaskAction
+//    fun buildRust() {
+//        val execOps = services.get(ExecOperations::class.java)
+//        execOps.exec {
+//            commandLine("mise", "run", "rust:build", "--target", target.get(), "--release")
+//        }
+//    }
+//}
 
-    @TaskAction
-    fun buildRust() {
-        val execOps = services.get(ExecOperations::class.java)
-        execOps.exec {
-            commandLine("mise", "run", "rust:build", "--target", target.get(), "--release")
-        }
-    }
-}
-
-tasks.register<BuildRustTask>("buildRust") {
-    target.set(Utils.guessTargetFromPlatform(org.gradle.internal.os.OperatingSystem.current().familyName, System.getProperty("os.arch")))
-}
+//tasks.register<BuildRustTask>("buildRust") {
+//    target.set(Utils.guessTargetFromPlatform(org.gradle.internal.os.OperatingSystem.current().familyName, System.getProperty("os.arch")))
+//}
 
 val targetMapping = mapOf(
     "x86_64-pc-windows-msvc" to ("win32-x86-64" to "dioxus.dll"),
@@ -166,35 +166,35 @@ val targetMapping = mapOf(
     "aarch64-apple-darwin" to ("darwin-aarch64" to "libdioxus.dylib"),
 )
 
-tasks.register("copyRustLibrary") {
-    group = "build"
-    description = "Copy Rust library to the appropriate resources directory"
-    dependsOn("patchPluginXml", "buildRust")
+//tasks.register("copyRustLibrary") {
+//    group = "build"
+//    description = "Copy Rust library to the appropriate resources directory"
+////    dependsOn("patchPluginXml", "buildRust")
+//
+//    val currentOs = org.gradle.internal.os.OperatingSystem.current().familyName
+//    val currentArch = System.getProperty("os.arch")
+//
+//    val targetKey = Utils.guessTargetFromPlatform(currentOs, currentArch)
+//
+//    val (targetFolder, targetFileName) = targetMapping[targetKey]
+//        ?: throw GradleException("Target platform is not supported: $targetKey")
+//
+//    val sourcePath = project.layout.projectDirectory.file("rust/target/$targetKey/release/$targetFileName")
+//    val destPath = project.layout.projectDirectory.file("src/main/resources/$targetFolder/$targetFileName")
+//
+//    inputs.file(sourcePath)
+//    outputs.file(destPath)
+//
+//    doLast {
+//        destPath.asFile.parentFile.mkdirs()
+//        sourcePath.asFile.copyTo(destPath.asFile, overwrite = true)
+//        logger.lifecycle("Copied $sourcePath to $destPath")
+//    }
+//}
 
-    val currentOs = org.gradle.internal.os.OperatingSystem.current().familyName
-    val currentArch = System.getProperty("os.arch")
-
-    val targetKey = Utils.guessTargetFromPlatform(currentOs, currentArch)
-
-    val (targetFolder, targetFileName) = targetMapping[targetKey]
-        ?: throw GradleException("Target platform is not supported: $targetKey")
-
-    val sourcePath = project.layout.projectDirectory.file("rust/target/$targetKey/release/$targetFileName")
-    val destPath = project.layout.projectDirectory.file("src/main/resources/$targetFolder/$targetFileName")
-
-    inputs.file(sourcePath)
-    outputs.file(destPath)
-
-    doLast {
-        destPath.asFile.parentFile.mkdirs()
-        sourcePath.asFile.copyTo(destPath.asFile, overwrite = true)
-        logger.lifecycle("Copied $sourcePath to $destPath")
-    }
-}
-
-tasks.matching { !(it.name == "buildPlugin" || it.name == "signPlugin" || it.name == "publishPlugin") && it.name == "processResources" }.configureEach {
-    dependsOn("copyRustLibrary")
-}
+//tasks.matching { !(it.name == "buildPlugin" || it.name == "signPlugin" || it.name == "publishPlugin") && it.name == "processResources" }.configureEach {
+//    dependsOn("copyRustLibrary")
+//}
 
 intellijPlatformTesting {
     runIde {

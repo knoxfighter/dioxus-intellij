@@ -6,6 +6,8 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.openapi.vfs.VirtualFileManager
+import org.rust.cargo.runconfig.filters.RsSourceCodeLinkFilter
 import kotlin.io.path.Path
 
 class DioxusCommandLineState(environment: ExecutionEnvironment, private val parent: DioxusRunConfiguration) : CommandLineState(environment) {
@@ -14,11 +16,22 @@ class DioxusCommandLineState(environment: ExecutionEnvironment, private val pare
     val workingDirectory = parent.workingDirectory
     val project = environment.project
 
+    init {
+        val dir = workingDirectory ?: project.basePath
+        val dir2 = dir?.let { Path(it) }
+        val file = dir2?.let { VirtualFileManager.getInstance().findFileByNioPath(it) }
+
+        val filter = RsSourceCodeLinkFilter(project, file)
+        addConsoleFilters(filter)
+    }
+
     override fun startProcess(): ProcessHandler {
+        val dir = workingDirectory ?: project.basePath
+
 //        val commandLine = PtyCommandLine(listOf("dx"))
         val commandLine = GeneralCommandLine("dx")
             .withCharset(Charsets.UTF_8)
-            .withWorkingDirectory((workingDirectory ?: project.basePath)?.let { Path(it) })
+            .withWorkingDirectory((dir)?.let { Path(it) })
 
         commandLine.addParameters(command)
 
@@ -30,6 +43,7 @@ class DioxusCommandLineState(environment: ExecutionEnvironment, private val pare
             .createColoredProcessHandler(commandLine)
 
         ProcessTerminatedListener.attach(processHandler)
+
         return processHandler
     }
 }
