@@ -2,6 +2,7 @@ package com.dioxuslabs.dioxus.runconfig
 
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
@@ -33,7 +34,7 @@ class DioxusCommandLineState(environment: ExecutionEnvironment, private val pare
             .withCharset(Charsets.UTF_8)
             .withWorkingDirectory((dir)?.let { Path(it) })
 
-        commandLine.addParameters(command)
+        commandLine.addParameters(ParametersList.parse(command).toList())
 
         if (mode == "Release") {
             commandLine.addParameter("-r")

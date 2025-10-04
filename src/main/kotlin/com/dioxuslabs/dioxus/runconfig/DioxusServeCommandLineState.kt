@@ -6,6 +6,7 @@ import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -23,7 +24,7 @@ class DioxusServeCommandLineState(environment: ExecutionEnvironment, private val
     override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
         val commandLine = GeneralCommandLine("dx")
             .withCharset(Charsets.UTF_8)
-        commandLine.addParameters(command)
+        commandLine.addParameters(ParametersList.parse(command).toList())
 
         if (mode == "Release") {
             commandLine.addParameter("-r")
